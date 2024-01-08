@@ -13,10 +13,7 @@ import PopupComponent from './popup';
 
 function App () {
 
-  // const currentDateHook = useState(new Date()); // => Array size 2
-  // const currentDate = currentDateHook[0];
-  // const setCurrentDate = currentDateHook[1]];
-  const [currentDate, _setCurrentDate] = useState(new Date()); // => Array size 2
+  const [currentDate, _setCurrentDate] = useState(new Date()); 
   const setCurrentDate = (callbackFunction) => {
     _setCurrentDate((prevDate) => {
       const newDate = callbackFunction(prevDate);
@@ -25,18 +22,7 @@ function App () {
     });
   };
 
-  /**
-   * {
-   *   "2022-12-12": [
-   *    { title, description, date: "2022-12-12T14:00:00"},
-   *    { title, description, date: "2022-12-12T14:00:00"},
-   *    { title, description, date: "2022-12-12T15:00:00"},
-   *   ],
-   *   "2022-12-13": [
-   *     { title, description, date: "2022-12-12T14:00:00"},
-   *   ]
-   * }
-   */
+ 
   const [events, setEvents] = useState({});
   const addEvent = (event) => {
     event.id = uuid.v1();

@@ -20,9 +20,7 @@ const DayComponent = () => {
   };
 
   const key = `${currentDate.getFullYear()}-${currentDate.getMonth()}-${currentDate.getDate()}`;
-  /**
-   * eventsToday => [] || undefined
-   */
+
   const eventsToday = events[key] || [];
 
   return (

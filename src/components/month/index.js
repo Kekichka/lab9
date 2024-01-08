@@ -1,65 +1,40 @@
-import { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { MONTHS } from '../shared/months';
 import './style.css';
 import CalendarContext from '../../context/calendar.context';
 
 const WEEK_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-function getDaysInMonth (year, month) {
-  return new Date(year, month + 1, 0).getDate();
-}
-
 const MonthComponent = () => {
-  const { currentDate, setCurrentDate } = useContext(CalendarContext);
+  const { currentDate, setCurrentDate, events } = useContext(CalendarContext);
 
   const currentYear = currentDate.getFullYear();
   const currentMonth = currentDate.getMonth();
+  const daysCount = new Date(currentYear, currentMonth + 1, 0).getDate();
 
-  const daysCount = getDaysInMonth(currentYear, currentMonth);
-
-  // const dayComponents = [];
-  // for (let i = 1; i <= daysCount; i += 1) {
-  //   const date = new Date(currentDate);
-  //   date.setDate(i);
-  //   const dayOfWeek = date.getDay();
-  //   dayComponents.push(
-  //     <div
-  //       style={{ "--day-col-start": dayOfWeek }}
-  //       className='content-item day'
-  //     >{i}</div>
-  //   );
-  // }
-
-  const click = (day) => {
-    setCurrentDate((prevDate) => {
-      const newDate = new Date(prevDate);
-      newDate.setDate(day);
-      return newDate;
-    });
+  const handleDayClick = (day) => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(day);
+    setCurrentDate(newDate);
   };
 
   return (
     <div className='content-wrapper month-wrapper'>
       <div className='header'>{MONTHS[currentMonth]}</div>
-      {
-        WEEK_DAYS.map(dayName => (<div className='day-name'>{dayName}</div>))
-      }
-      {/* {dayComponents} */}
-      {
-        Array(daysCount).fill(null)
-          .map((el, i) => {
-            const date = new Date(currentDate);
-            date.setDate(i + 1);
-            const dayOfWeek = date.getDay();
-            return (
-              <div
-                onClick={() => click(i + 1)}
-                style={{ "--day-col-start": dayOfWeek }}
-                className='content-item day'
-              >{i + 1}</div>
-            );
-          })
-      }
+      {WEEK_DAYS.map((dayName, index) => (
+        <div key={index} className='day-name'>
+          {dayName}
+        </div>
+      ))}
+      {Array.from({ length: daysCount }, (_, i) => i + 1).map((day) => (
+        <div
+          key={day}
+          onClick={() => handleDayClick(day)}
+          className={`content-item day ${events[`${currentYear}-${currentMonth}-${day}`]?.length ? 'has-events' : ''}`}
+        >
+          {day}
+        </div>
+      ))}
     </div>
   );
 };

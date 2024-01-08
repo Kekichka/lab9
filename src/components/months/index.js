@@ -1,32 +1,43 @@
-import { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import './style.css';
 import CalendarContext from '../../context/calendar.context';
 import { MONTHS } from '../shared/months';
 
 const MonthsComponent = () => {
+  const { setCurrentDate, currentDate, events } = useContext(CalendarContext);
 
- const { setCurrentDate, currentDate } = useContext(CalendarContext);
+  const hasEventsInMonth = (monthIndex) => {
+    const key = `${currentDate.getFullYear()}-${monthIndex}-${currentDate.getDate()}`;
+    const eventsForMonth = events[key] || [];
+    return eventsForMonth.length > 0;
+  };
 
- const click = (index) => {
-  setCurrentDate((preCurrentDate) => {
-   const newDate = new Date(preCurrentDate);
-   newDate.setMonth(index);
-   return newDate;
-  });
- };
+  const handleClick = (index) => {
+    setCurrentDate((prevDate) => {
+      const newDate = new Date(prevDate);
+      newDate.setMonth(index);
+      return newDate;
+    });
+  };
 
- return (
-  <div className='months-wrapper content-wrapper'>
-   <div className='header'>{MONTHS[currentDate.getMonth()]}</div>
-   {
-    MONTHS.map((month, i) => (<div
-     className='month content-item'
-     onClick={() => click(i)}
-    >{month}
-    </div>))
-   }
-  </div >
- );
+  const renderMonth = (month, index) => (
+    <div
+      key={index}
+      className={`month content-item ${hasEventsInMonth(index) ? 'has-events' : ''}`}
+      onClick={() => handleClick(index)}
+    >
+      {month}
+    </div>
+  );
+
+  const renderMonths = () => MONTHS.map(renderMonth);
+
+  return (
+    <div className='months-wrapper content-wrapper'>
+      <div className='header'>{MONTHS[currentDate.getMonth()]}</div>
+      {renderMonths()}
+    </div>
+  );
 };
 
 export default MonthsComponent;
